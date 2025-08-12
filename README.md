@@ -51,17 +51,28 @@ O problema é duplo:
 
 ## Estrutura do Repositório
 
-```
-/
-├── maps/              # Arquivos .txt com a representação dos mapas
+Trabalho-IA-Zelda-Pathfinding/
+│
+├── .git/
+│
+├── docs/
+│   └── Trabalho - Busca Heurística.pdf  <-- (Sugestão: guarde o PDF original do trabalho aqui)
+│
+├── maps/
 │   ├── hyrule.txt
-│   └── ...
-├── src/               # Código-fonte do projeto
-│   ├── astar.py       # Lógica do algoritmo A*
-│   ├── mapa.py        # Módulo para carregar e gerenciar os mapas
-│   └── main.py        # Orquestrador principal do programa
-└── README.md          # Este arquivo
-```
+│   ├── masmorra1.txt
+│   ├── masmorra2.txt
+│   └── masmorra3.txt
+│
+├── src/
+│   ├── main.py
+│   ├── astar.py
+│   ├── mapa.py
+│   └── visualizacao.py
+│
+├── .gitignore
+├── LICENSE
+└── README.md
 
 ## Como Executar
 
