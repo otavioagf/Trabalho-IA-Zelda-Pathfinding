@@ -8,14 +8,11 @@ from .visualizacao import gerar_imagem_mapa
 
 # --- DEFINIÇÃO DOS PONTOS DE INTERESSE ---
 PONTOS = {
-    "CASA_LINK": (24, 27),                  # Posição 'L' no mapa
-    "LOST_WOODS": (6, 5),                   # Posição 'LW' no mapa
-    
-    "MASMORRA_1_ENTRADA_HYRULE": (24, 1),   # MA no topo do mapa
-    "MASMORRA_2_ENTRADA_HYRULE": (39, 17),  # MA no lado direito do mapa
-    "MASMORRA_3_ENTRADA_HYRULE": (5, 33),   # MA no lado esquerdo do mapa
-
-    # Coordenadas internas 
+    "CASA_LINK": (24, 27),
+    "LOST_WOODS": (6, 5),
+    "MASMORRA_1_ENTRADA_HYRULE": (24, 1),
+    "MASMORRA_2_ENTRADA_HYRULE": (39, 17),
+    "MASMORRA_3_ENTRADA_HYRULE": (5, 33),
     "M1_ENTRADA": (14, 26), 
     "M1_PINGENTE": (3, 13),
     "M2_ENTRADA": (13, 25), 
@@ -100,9 +97,10 @@ def main():
     print("Carregando mapas...")
     
     mapa_hyrule = Mapa("hyrule.txt")
-    mapa_m1 = Mapa("masmorra1.txt", is_dungeon=True)
-    mapa_m2 = Mapa("masmorra2.txt", is_dungeon=True)
-    mapa_m3 = Mapa("masmorra3.txt", is_dungeon=True)
+    # Chamadas simplificadas, sem o parâmetro 'is_dungeon'
+    mapa_m1 = Mapa("masmorra1.txt")
+    mapa_m2 = Mapa("masmorra2.txt")
+    mapa_m3 = Mapa("masmorra3.txt")
 
     if not verificar_mapas([
         ("M1", mapa_m1, PONTOS["M1_ENTRADA"], PONTOS["M1_PINGENTE"]),
