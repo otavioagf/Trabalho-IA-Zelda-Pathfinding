@@ -84,9 +84,9 @@ def main():
         PONTOS = carregar_configuracao()
         print("Carregando mapas...")
         mapa_hyrule = Mapa("hyrule.txt")
-        mapa_m1 = Mapa("masmorra1.txt", is_dungeon=True)
-        mapa_m2 = Mapa("masmorra2.txt", is_dungeon=True)
-        mapa_m3 = Mapa("masmorra3.txt", is_dungeon=True)
+        mapa_m1 = Mapa("masmorra1.txt")
+        mapa_m2 = Mapa("masmorra2.txt")
+        mapa_m3 = Mapa("masmorra3.txt")
 
         verificar_mapas([
             ("M1", mapa_m1, PONTOS["M1_ENTRADA"], PONTOS["M1_PINGENTE"]),
@@ -131,6 +131,10 @@ def main():
                 percurso_str.append(proxima_masmorra)
             custo_total_ordem += custos_percursos[f"{ponto_atual}-FIM"]
             percurso_str.append("FIM")
+            
+            # --- LINHA ADICIONADA DE VOLTA ---
+            print(f"Ordem {' -> '.join(percurso_str)}: Custo Total = {custo_total_ordem}")
+            
             if custo_total_ordem < menor_custo_total:
                 menor_custo_total = custo_total_ordem
                 melhor_ordem = percurso_str

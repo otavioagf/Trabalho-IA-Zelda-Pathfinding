@@ -12,13 +12,11 @@ class Mapa:
         altura (int): A altura da grade do mapa.
         largura (int): A largura da grade do mapa.
     """
-    def __init__(self, nome_arquivo, is_dungeon=False):
+    def __init__(self, nome_arquivo):
         """Inicializa o mapa carregando-o de um arquivo.
 
         Args:
             nome_arquivo (str): O nome do arquivo a ser carregado da pasta 'maps'.
-            is_dungeon (bool, optional): Se True, trata o caractere 'F' como
-                piso de baixo custo. Defaults to False.
         """
         self.custos = {
             'G': 10,   # Grama
@@ -29,14 +27,10 @@ class Mapa:
             'P': 10,   # Piso da Masmorra
             'L': 10,   # Link (Posição Inicial)
             'LW': 10,  # Lost Woods
-            'MA': 20,  # Entrada da Masmorra (Custo de Areia, como solicitado)
+            'MA': 20,  # Entrada da Masmorra (Custo de Areia)
             'MS': 10,  # Master Sword
             'X': float('inf') # Parede ou obstáculo
         }
-
-        # Se o mapa for uma masmorra, o caractere 'F' passa a ter custo 10.
-        if is_dungeon:
-            self.custos['F'] = 10
         
         self.grid = self._carregar_mapa_de_arquivo(nome_arquivo)
         self.altura = len(self.grid)
