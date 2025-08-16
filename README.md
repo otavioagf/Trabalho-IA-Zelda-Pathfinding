@@ -2,7 +2,7 @@
 
 ### Trabalho Prático de Inteligência Artificial
 
-Um agente autônomo desenvolvido em Python para encontrar a rota ótima em um mapa inspirado no universo de *The Legend of Zelda*, utilizando o algoritmo de busca A* e solucionando uma variação do Problema do Caixeiro Viajante.
+Um agente autônomo desenvolvido em Python para encontrar a rota ótima em um mapa inspirado no universo de *The Legend of Zelda*, utilizando o algoritmo de busca A*.
 
 ---
 
@@ -27,10 +27,7 @@ Um agente autônomo desenvolvido em Python para encontrar a rota ótima em um ma
 
 ## Visualização do Resultado
 
-Ao final da execução, o programa gera uma pasta `imagens_geradas` com a jornada completa do Link.
-
-*(Dica: Após enviar as imagens para o GitHub, você pode clicar em uma delas, copiar o endereço e colar aqui para exibi-la diretamente no README).*
-![Exemplo de Rota em Hyrule](URL_DA_SUA_IMAGEM_AQUI.png)
+Ao final da execução, o programa gera uma pasta `imagens_geradas` com a jornada completa do Link. Além dos custos dos caminhos mostrados no terminal.
 
 ## Estrutura do Repositório
 
@@ -71,7 +68,6 @@ Os terrenos e seus respectivos custos de movimento são:
 |     MS    | Marco da Master Sword           |   10  |
 |     X     | Parede / Obstáculo              |  ∞    |
 
-*Observação: O código também está programado para tratar a letra 'F' como piso de custo 10 caso seja usada nos mapas das masmorras.*
 
 ## Guia de Execução (a partir do arquivo ZIP)
 
