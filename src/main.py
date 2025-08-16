@@ -1,16 +1,21 @@
 # src/main.py
 
 import itertools
+import os
 from .mapa import Mapa
 from .astar import astar_search
+from .visualizacao import gerar_imagem_mapa
 
 # --- DEFINIÇÃO DOS PONTOS DE INTERESSE ---
 PONTOS = {
-    "CASA_LINK": (24, 27),
-    "LOST_WOODS": (6, 5),
-    "MASMORRA_1_ENTRADA_HYRULE": (32, 5),
-    "MASMORRA_2_ENTRADA_HYRULE": (17, 39),
-    "MASMORRA_3_ENTRADA_HYRULE": (1, 24),
+    "CASA_LINK": (24, 27),                  # Posição 'L' no mapa
+    "LOST_WOODS": (6, 5),                   # Posição 'LW' no mapa
+    
+    "MASMORRA_1_ENTRADA_HYRULE": (24, 1),   # MA no topo do mapa
+    "MASMORRA_2_ENTRADA_HYRULE": (39, 17),  # MA no lado direito do mapa
+    "MASMORRA_3_ENTRADA_HYRULE": (5, 33),   # MA no lado esquerdo do mapa
+
+    # Coordenadas internas 
     "M1_ENTRADA": (14, 26), 
     "M1_PINGENTE": (3, 13),
     "M2_ENTRADA": (13, 25), 
@@ -20,7 +25,6 @@ PONTOS = {
 }
 
 def verificar_mapas(mapas_e_pontos):
-    """Função de segurança para verificar se os pontos estão em locais caminháveis."""
     for nome, mapa, entrada, pingente in mapas_e_pontos:
         if mapa.get_custo(entrada) == float('inf'):
             print(f"ERRO DE VERIFICAÇÃO: Ponto de ENTRADA {entrada} da {nome} está sobre uma parede!")
@@ -37,17 +41,69 @@ def calcular_custo_masmorra(mapa_masmorra, entrada, pingente):
     if not caminho_volta: return None
     return custo_ida + custo_volta
 
+def visualizar_jornada_otima(ordem, mapas, pontos, pasta_resultados):
+    print("\n\n--- Gerando Imagens da Jornada Ótima ---")
+    
+    mapa_hyrule = mapas["hyrule"]
+    info_masmorras = {
+        "M1": {"mapa": mapas["m1"], "entrada": pontos["M1_ENTRADA"], "pingente": pontos["M1_PINGENTE"]},
+        "M2": {"mapa": mapas["m2"], "entrada": pontos["M2_ENTRADA"], "pingente": pontos["M2_PINGENTE"]},
+        "M3": {"mapa": mapas["m3"], "entrada": pontos["M3_ENTRADA"], "pingente": pontos["M3_PINGENTE"]},
+    }
+    pontos_hyrule = {
+        "INICIO": pontos["CASA_LINK"],
+        "M1": pontos["MASMORRA_1_ENTRADA_HYRULE"], "M2": pontos["MASMORRA_2_ENTRADA_HYRULE"],
+        "M3": pontos["MASMORRA_3_ENTRADA_HYRULE"], "FIM": pontos["LOST_WOODS"]
+    }
+
+    passo_counter = 1
+    for i in range(len(ordem) - 1):
+        ponto_de_partida_nome = ordem[i]
+        ponto_de_chegada_nome = ordem[i+1]
+        
+        partida_coord = pontos_hyrule[ponto_de_partida_nome]
+        chegada_coord = pontos_hyrule[ponto_de_chegada_nome]
+        
+        caminho, _ = astar_search(mapa_hyrule, partida_coord, chegada_coord)
+        
+        nome_base = f"{passo_counter:02d}_jornada_{ponto_de_partida_nome}_para_{ponto_de_chegada_nome}.png"
+        caminho_completo_arquivo = os.path.join(pasta_resultados, nome_base)
+        gerar_imagem_mapa(mapa_hyrule, caminho, partida_coord, chegada_coord, caminho_completo_arquivo)
+        passo_counter += 1
+        
+        if ponto_de_chegada_nome in info_masmorras:
+            masmorra_info = info_masmorras[ponto_de_chegada_nome]
+            
+            caminho_ida, _ = astar_search(masmorra_info["mapa"], masmorra_info["entrada"], masmorra_info["pingente"])
+            nome_base_ida = f"{passo_counter:02d}_jornada_{ponto_de_chegada_nome}_ida.png"
+            caminho_completo_ida = os.path.join(pasta_resultados, nome_base_ida)
+            gerar_imagem_mapa(masmorra_info["mapa"], caminho_ida, masmorra_info["entrada"], masmorra_info["pingente"], caminho_completo_ida, is_dungeon=True)
+            passo_counter += 1
+            
+            caminho_volta, _ = astar_search(masmorra_info["mapa"], masmorra_info["pingente"], masmorra_info["entrada"])
+            nome_base_volta = f"{passo_counter:02d}_jornada_{ponto_de_chegada_nome}_volta.png"
+            caminho_completo_volta = os.path.join(pasta_resultados, nome_base_volta)
+            gerar_imagem_mapa(masmorra_info["mapa"], caminho_volta, masmorra_info["pingente"], masmorra_info["entrada"], caminho_completo_volta, is_dungeon=True)
+            passo_counter += 1
+
 def main():
-    print("--- A Lenda de Link: Em Busca da Rota Ótima ---")
+    PASTA_RESULTADOS = "imagens_geradas"
+    if not os.path.exists(PASTA_RESULTADOS):
+        os.makedirs(PASTA_RESULTADOS)
+        print(f"Pasta '{PASTA_RESULTADOS}' criada.")
+    else:
+        print(f"Limpando pasta '{PASTA_RESULTADOS}'...")
+        for arquivo in os.listdir(PASTA_RESULTADOS):
+            os.remove(os.path.join(PASTA_RESULTADOS, arquivo))
+
+    print("\n--- A Lenda de Link: Em Busca da Rota Ótima ---")
     print("Carregando mapas...")
     
     mapa_hyrule = Mapa("hyrule.txt")
-    # Ao carregar as masmorras, informamos ao construtor para tratar 'F' como piso
     mapa_m1 = Mapa("masmorra1.txt", is_dungeon=True)
     mapa_m2 = Mapa("masmorra2.txt", is_dungeon=True)
     mapa_m3 = Mapa("masmorra3.txt", is_dungeon=True)
 
-    # --- ETAPA DE VERIFICAÇÃO ---
     if not verificar_mapas([
         ("M1", mapa_m1, PONTOS["M1_ENTRADA"], PONTOS["M1_PINGENTE"]),
         ("M2", mapa_m2, PONTOS["M2_ENTRADA"], PONTOS["M2_PINGENTE"]),
@@ -70,7 +126,7 @@ def main():
         print(f"Custo para completar a {masmorra}: {custo}")
 
     print("\nCalculando custos de percurso em Hyrule...")
-    pontos_hyrule = {
+    pontos_hyrule_principais = {
         "INICIO": PONTOS["CASA_LINK"],
         "M1": PONTOS["MASMORRA_1_ENTRADA_HYRULE"],
         "M2": PONTOS["MASMORRA_2_ENTRADA_HYRULE"],
@@ -78,9 +134,9 @@ def main():
         "FIM": PONTOS["LOST_WOODS"]
     }
     custos_percursos = {}
-    for p1, p2 in itertools.combinations(pontos_hyrule.keys(), 2):
+    for p1, p2 in itertools.combinations(pontos_hyrule_principais.keys(), 2):
         print(f"Calculando rota de {p1} para {p2}...")
-        _, custo = astar_search(mapa_hyrule, pontos_hyrule[p1], pontos_hyrule[p2])
+        _, custo = astar_search(mapa_hyrule, pontos_hyrule_principais[p1], pontos_hyrule_principais[p2])
         if custo > 0:
             custos_percursos[f"{p1}-{p2}"] = custo
             custos_percursos[f"{p2}-{p1}"] = custo
@@ -112,6 +168,11 @@ def main():
     if melhor_ordem:
         print(f"A melhor ordem para visitar as masmorras é: {' -> '.join(melhor_ordem)}")
         print(f"O menor custo total para completar a jornada é: {menor_custo_total}")
+        
+        visualizar_jornada_otima(melhor_ordem, 
+                                {"hyrule": mapa_hyrule, "m1": mapa_m1, "m2": mapa_m2, "m3": mapa_m3}, 
+                                PONTOS,
+                                PASTA_RESULTADOS)
     else:
         print("Não foi possível encontrar uma rota válida para completar a missão.")
 

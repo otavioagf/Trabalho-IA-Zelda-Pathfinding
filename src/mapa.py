@@ -6,7 +6,7 @@ class Mapa:
     de terreno e fornecer informações sobre o mapa.
     """
     def __init__(self, nome_arquivo, is_dungeon=False):
-        # Dicionário de custos baseado na legenda e hyrule.txt
+        # Dicionário de custos baseado na sua legenda e hyrule.txt
         self.custos = {
             'G': 10,   # Grama
             'S': 20,   # Areia
@@ -16,7 +16,7 @@ class Mapa:
             'P': 10,   # Piso da Masmorra
             'L': 10,   # Link (Posição Inicial)
             'LW': 10,  # Lost Woods (Posição Final)
-            'MA': 10,  # Masmorra
+            'MA': 20,  # Masmorra
             'MS': 10,  # Master Sword
             'X': float('inf') # Parede ou obstáculo
         }
@@ -33,8 +33,26 @@ class Mapa:
         caminho_completo = f"maps/{nome_arquivo}"
         try:
             with open(caminho_completo, 'r') as f:
-                # Seus arquivos usam o caractere de tabulação ('\t') como separador
-                return [line.strip().split('\t') for line in f.readlines()]
+                linhas = [line.strip().split('\t') for line in f.readlines()]
+                
+                # --- LÓGICA DE ROBUSTEZ PARA MAPAS IRREGULARES ---
+                # Se o arquivo estiver vazio, retorna uma lista vazia
+                if not linhas: return []
+                
+                # Encontra o comprimento da linha mais longa
+                max_largura = 0
+                for linha in linhas:
+                    if len(linha) > max_largura:
+                        max_largura = len(linha)
+                
+                # Garante que todas as linhas tenham o mesmo comprimento,
+                # preenchendo as mais curtas com 'X' (paredes).
+                # Isso evita o erro 'IndexError' na geração da imagem.
+                for linha in linhas:
+                    while len(linha) < max_largura:
+                        linha.append('X')
+                
+                return linhas
         except FileNotFoundError:
             print(f"Erro: O arquivo '{caminho_completo}' não foi encontrado.")
             return []

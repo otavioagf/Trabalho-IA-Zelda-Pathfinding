@@ -1,0 +1,6 @@
+**Execute o programa:**
+    Nenhuma dependência externa é necessária. Para rodar a simulação principal, utilize o seguinte comando na raiz do projeto:
+    ```powershell
+    pip install Pillow
+    python -m src.main
+    ```

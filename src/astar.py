@@ -1,5 +1,3 @@
-# src/astar.py (Versão Final Corrigida)
-
 import heapq
 from .mapa import Mapa
 
