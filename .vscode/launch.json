@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Executar Projeto (Módulo)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.main", 
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
