@@ -132,7 +132,6 @@ def main():
             custo_total_ordem += custos_percursos[f"{ponto_atual}-FIM"]
             percurso_str.append("FIM")
             
-            # --- LINHA ADICIONADA DE VOLTA ---
             print(f"Ordem {' -> '.join(percurso_str)}: Custo Total = {custo_total_ordem}")
             
             if custo_total_ordem < menor_custo_total:
